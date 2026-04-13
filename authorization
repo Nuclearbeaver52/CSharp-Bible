@@ -1,0 +1,65 @@
+XAML
+<Window x:Class="SimpleAuthApp.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Вход в систему" Height="250" Width="300"
+        WindowStartupLocation="CenterScreen">
+    
+    <StackPanel Margin="20" VerticalAlignment="Center">
+        
+        <TextBlock Text="Логин:" Margin="0,0,0,5"/>
+        <TextBox x:Name="LoginTextBox" Height="25" Margin="0,0,0,15"/>
+        
+        <TextBlock Text="Пароль:" Margin="0,0,0,5"/>
+        <PasswordBox x:Name="PassBox" Height="25" Margin="0,0,0,20"/>
+        
+        <Button Content="Войти" Height="30" Click="LoginButton_Click"/>
+        
+    </StackPanel>
+</Window>
+
+XAML.CS
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
+
+namespace SimpleAuthApp
+{
+    // Простая модель пользователя
+    public class User
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
+    }
+
+    public partial class LoginWindow : Window
+    {
+        // Создаем наш список пользователей (In-Memory база)
+        private static List<User> _usersDb = new List<User>();
+
+        public LoginWindow()
+        {
+            InitializeComponent();
+            
+            // Сразу добавляем пользователя, чтобы можно было проверить вход
+            _usersDb.Add(new User { Username = "admin", Password = "123" });
+        }
+
+        // Обработчик нажатия на кнопку "Войти"
+        private void LoginButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Ищем в списке человека с таким же логином и паролем
+            var user = _usersDb.FirstOrDefault(u => u.Username == LoginTextBox.Text && u.Password == PassBox.Password);
+
+            // Если user не пустой (нашли совпадение)
+            if (user != null)
+            {
+                MessageBox.Show("Успешный вход!", "Привет!");
+            }
+            else // Если ничего не нашли
+            {
+                MessageBox.Show("Неверный логин или пароль!", "Ошибка");
+            }
+        }
+    }
+}
